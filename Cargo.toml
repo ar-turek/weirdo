@@ -1,0 +1,6 @@
+[workspace]
+members = [
+    "weirdo",
+    "weirdo-cli",
+    "weirdo-httpserver",
+]
