@@ -5,4 +5,6 @@ authors = ["Artur Ciesielski <artur.ciesielski@gmail.com>"]
 edition = "2018"
 
 [dependencies]
-clap = "2.33.0"
+clap = "2.33"
+serde = { version = "1.0", features = ["derive"]}
+toml = "0.5"
