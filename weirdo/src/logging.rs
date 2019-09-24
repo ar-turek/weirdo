@@ -1,6 +1,3 @@
-use super::config::LoggingConfig;
+use super::config::DaemonConfig;
 
-
-pub fn setup_logging(_config: &LoggingConfig) {
-
-}
+pub fn setup_logging(_config: &DaemonConfig) {}
