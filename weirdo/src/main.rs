@@ -3,16 +3,18 @@ extern crate serde;
 extern crate toml;
 
 mod config;
+mod logging;
 
 use config::parse_cfg_file;
+use logging::setup_logging;
 use clap::{App, Arg};
 
 
 fn main() {
     let params = get_arg_parser().get_matches();
-    let config = parse_cfg_file(params.value_of("config").unwrap()).unwrap();
+    let config = parse_cfg_file(params.value_of("config").unwrap()).expect("");
 
-    println!("{}", config.state.pidfile);
+    setup_logging(&config.logging);
 }
 
 fn get_arg_parser<'a, 'b>() -> clap::App<'a, 'b> {
