@@ -9,6 +9,7 @@ pub enum Error {
     Io(IoError),
     Config(TomlError),
     Connection(PostgresError),
+    Db(PostgresError),
 }
 
 impl fmt::Display for Error {
@@ -17,6 +18,7 @@ impl fmt::Display for Error {
             Error::Io(ref err) => write!(f, "I/O error: {}", err),
             Error::Config(ref err) => write!(f, "Config parse error: {}", err),
             Error::Connection(ref err) => write!(f, "Connection error: {}", err),
+            Error::Db(ref err) => write!(f, "Database error: {}", err),
         }
     }
 }
@@ -27,6 +29,7 @@ impl error::Error for Error {
             Error::Io(ref err) => Some(err),
             Error::Config(ref err) => Some(err),
             Error::Connection(ref err) => Some(err),
+            Error::Db(ref err) => Some(err),
         }
     }
 }
@@ -45,6 +48,16 @@ impl std::convert::From<TomlError> for Error {
 
 impl std::convert::From<PostgresError> for Error {
     fn from(err: PostgresError) -> Error {
-        Error::Connection(err)
+        if let Some(code) = err.code() {
+            match code.code() {
+                // Postgres connection errors SQLSTATEs
+                "08000" | "08003" | "08006" | "08001" | "08004" | "08007" | "08P01" => {
+                    Error::Connection(err)
+                }
+                _ => Error::Db(err),
+            }
+        } else {
+            Error::Connection(err)
+        }
     }
 }
