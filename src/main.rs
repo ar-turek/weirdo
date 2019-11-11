@@ -1,7 +1,7 @@
 extern crate clap;
 extern crate log;
 extern crate serde;
-extern crate simple_logger;
+extern crate simple_logging;
 extern crate toml;
 
 mod config;

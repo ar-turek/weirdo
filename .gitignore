@@ -11,4 +11,6 @@ Cargo.lock
 
 # Testing configs
 testconfig.toml
-testconfig_replication.toml
+
+# Testing logfile
+weirdo.log

@@ -1,0 +1,43 @@
+[state]
+pidfile = "/var/run/weirdo/weirdo.pid"
+statefile = "/var/lib/weirdo/weirdo.state"
+
+
+[logging]
+logfile = "./weirdo.log"
+level = "info"
+
+
+[replication]
+
+    [replication.servers]
+
+        [replication.servers.master]
+        host = "localhost"
+        port = 1111
+
+        [replication.servers.slave]
+        host = "localhost"
+        port = 1112
+
+
+    [replication.databases]
+
+        [replication.databases.master]
+        server = "master"
+        name = "master"
+        user = "master"
+        pass = "master"
+
+        [replication.databases.slave]
+        server = "slave"
+        name = "slave"
+        user = "slave"
+        pass = "slave"
+
+
+    [replication.synchs]
+
+        [replication.synchs.synch0]
+        masters = ["master"]
+        slaves = ["slave"]
