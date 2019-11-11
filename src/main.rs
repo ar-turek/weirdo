@@ -5,22 +5,32 @@ extern crate simple_logger;
 extern crate toml;
 
 mod config;
+mod error;
 mod logging;
-mod replications;
+mod replication;
 
 use clap::{App, Arg};
-use config::{parse_cfg_file, parse_replications_file};
+use config::parse_config;
+use log::info;
 use logging::setup_logging;
-use replications::create_replications;
+use replication::create_synchs;
 
 fn main() {
     let params = get_arg_parser().get_matches();
-    let config = parse_cfg_file(params.value_of("config").unwrap()).expect("");
-    let replications = parse_replications_file(params.value_of("replications").unwrap()).expect("");
+    let config_filename = params.value_of("config").unwrap();
+    let config = match parse_config(config_filename) {
+        Ok(c) => c,
+        Err(e) => {
+            println!("{}", e);
+            return;
+        }
+    };
 
     setup_logging(&config);
-    let replications = create_replications(replications).unwrap();
-    println!("{:?}", &replications);
+    info!("Weirdo starting...");
+
+    let synchs = create_synchs(config).unwrap();
+    println!("{:?}", &synchs);
 }
 
 fn get_arg_parser<'a, 'b>() -> clap::App<'a, 'b> {
@@ -33,16 +43,8 @@ fn get_arg_parser<'a, 'b>() -> clap::App<'a, 'b> {
                 .short("c")
                 .long("config")
                 .value_name("config_file")
-                .help("Config file location")
+                .help("Location of the config file")
                 .default_value("/etc/weirdo/weirdo.toml"),
-        )
-        .arg(
-            Arg::with_name("replications")
-                .short("r")
-                .long("replications")
-                .value_name("replications_file")
-                .help("Replications file location")
-                .default_value("/etc/weirdo/replications.toml"),
         )
         .arg(
             Arg::with_name("--no-daemon")
