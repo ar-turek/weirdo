@@ -1,3 +1,4 @@
+use std::convert::From;
 use std::fs::File;
 use std::io::Read;
 
@@ -63,6 +64,6 @@ pub fn parse_config(filename: &str) -> Result<Config, Error> {
     let res = toml::from_str(&contents);
     match res {
         Ok(c) => Ok(c),
-        Err(e) => Err(Error::from(e)),
+        Err(e) => Err(From::from(e)),
     }
 }
